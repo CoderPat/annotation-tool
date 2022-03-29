@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/bootstrap.min.css') }}">
+
+<style>
+.container {
+  height: 200px;
+  width: 600px;
+  position: relative;
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.text-center {
+  text-align: center;
+}
+
+</style>
+
+<head>
+    <title>Visual Explanations Study</title>
+</head>
+<body>
+    <div class="container center">
+      <h1>Visual Explanations Study</h1>
+      <br>
+      <form method="post">
+        <!-- Email input -->
+        <div class="form-outline mb-4">
+          <input type="text" id="usernamebox" class="form-control" name="username" placeholder="Username"/>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4" name="action" value="login">Sign in</button>
+        <button type="submit" class="btn btn-primary btn-block mb-4" name="action" value="register">Create User</button>
+
+      </form>
+      {% if error %}
+      <div class="alert alert-warning text-center" role="alert">
+        {{ error }}
+      </div>
+      {% endif %}
+    </div>
+</body>
+</html>

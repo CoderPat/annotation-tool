@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/bootstrap.min.css') }}">
+
+<style>
+.container {
+  height: 1000px;
+  width: 1400px;
+  position: relative;
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.imagebox {
+  border: 3px solid blue;
+  width: 270px;
+  padding: 10px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.btn-width {
+  width: 400px;
+  margin: auto;
+}
+</style>
+
+<head>
+<title>Visual Explanations Study</title>
+</head>
+<body>
+    <div class="container center">
+        <h1 class="text-center"> Example {{ example.id }} </h1>
+        <br>
+        <div class="imagebox" style="margin: auto;">
+        <img src="{{ url_for('static', filename=example.path)}}" alt="Image" style="width:244px;">
+        </div>
+        <br>
+        <div class="text-center">
+        <h3> Label = {{ example.label }} </h3>
+        <h3> Prediction = {{ example.prediction }} </h3>
+        </div>
+        <form method="post">
+        <!-- Email input -->
+        <br>
+        {% for explanation in explanations %}
+        <div style="display: inline-block; margin: auto;">
+        <div class="imagebox">
+        <img src="{{ url_for('static', filename=explanation.path)}}" alt="Image" style="width:244px;">
+        </div>
+        <br>
+        <input style="width:100px; margin: auto" type="text" id="explanation" class="form-control" name="score_{{explanation.id}}" value="{{ explanation.score }}"/>
+        </div>
+        {% endfor %}
+        <br>
+        <br>
+        <button type="submit" class="btn btn-width btn-primary btn-block mb-4" name="action" value="previous">Save</button>
+      </form>
+      <a href="{{ url_for('example', name=name, example_id=example.id+1) }}" class="btn btn-width btn-primary btn-block mb-4">Next</a>
+      <a href="{{ url_for('example', name=name, example_id=example.id-1) }}" class="btn btn-width btn-primary btn-block mb-4">Previous</a>
+      <a href="{{ url_for('dashboard', name=name) }}" class="btn btn-width btn-primary btn-block mb-4">Back</a>)}}
+    </div>
+</body>
+</html>

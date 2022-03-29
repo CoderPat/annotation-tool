@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/bootstrap.min.css') }}">
+
+<style>
+.container {
+  height: 200px;
+  width: 600px;
+  position: relative;
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.text-center {
+  text-align: center;
+}
+</style>
+
+<head>
+<title>Visual Explanations Study</title>
+</head>
+<body>
+    <div class="container center">
+        <h1> Welcome {{ name}} </h1>
+        <br>
+        <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">Example Number</th>
+            <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for example in examples %}
+            <tr>
+            <th scope="row"> <a href="{{ url_for('example', name=name, example_id=example.id) }}"> {{ example.id }}</a> </th>
+            <td> {{ example.count }} / 5 </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</body>
+</html>
