@@ -12,7 +12,6 @@ CREATE TABLE examples (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT UNIQUE NOT NULL,
   path TEXT NOT NULL,
-  label TEXT NOT NULL,
   prediction TEXT NOT NULL
 );
 

@@ -113,7 +113,7 @@ def check_and_update_examples(examples, explanations, randomize_explanations=Tru
     )
     existing_examples = cursor.fetchall()
     existing_examples = {example['name']: example for example in existing_examples}
-    for example_name, example_path, example_label, example_prediction in examples:
+    for example_name, example_path, example_prediction in examples:
         if example_name not in existing_examples:
             print(f"adding new example: {example_name}")
             if not explanations[example_name]:
@@ -122,8 +122,8 @@ def check_and_update_examples(examples, explanations, randomize_explanations=Tru
                 continue
             
             cursor.execute(
-                "INSERT INTO examples (name, path, label, prediction) VALUES (?, ?, ?, ?)",
-                (example_name, example_path, example_label, example_prediction)
+                "INSERT INTO examples (name, path, prediction) VALUES (?, ?, ?)",
+                (example_name, example_path, example_prediction)
             )
 
             example_id = cursor.lastrowid

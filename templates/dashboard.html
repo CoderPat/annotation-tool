@@ -12,7 +12,7 @@
 .center {
   margin: 0;
   position: absolute;
-  top: 50%;
+  top: 30%;
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
@@ -30,6 +30,14 @@
     <div class="container center">
         <h1> Welcome {{ name}} </h1>
         <br>
+        The goal of this study is to rate the quality of explanations provided for the decision of a unknown model classifing images.
+        <br> <br>
+        For each example, you will be presented with an image, the model's predicted class and <i>four</i> explanations for the model's prediction, each extracted with a different method.
+        Each explanation consists of an heatmap with the same size as the image, where the color around each pixel indicating the <i>importance</i> of the pixel for the model's prediction.
+        <br> <br>
+        You will be asked to <i>rank</i> the quality of the four different explanation for each image, according to how much you <i>trust</i> the explanation to represent relative importance of the pixels for the model's prediction.
+        Please use numerical rankings, from 1 to 4, where 1 and 4 means that you trust the explanation the most and least, respectively. Ties are allows ("1, 1, 3, 4" is a valid ranking).
+        <br> <br>
         <table class="table">
         <thead>
             <tr>

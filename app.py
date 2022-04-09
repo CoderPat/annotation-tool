@@ -18,9 +18,9 @@ if IS_RUNNING:
     examples = []
     explanations = defaultdict(list)
     for example_tag in examples_tags:
-        example_name, example_label, example_prediction = example_tag.split(':')
+        example_name, example_prediction = example_tag.split(':')[:2]
         example_path = os.path.join('examples', example_tag, 'image.png')
-        examples.append((example_name, example_path, example_label, example_prediction))
+        examples.append((example_name, example_path, example_prediction))
         for explanation in os.listdir(os.path.join(EXAMPLES_FOLDER, example_tag)):
             if explanation.endswith('.png') and explanation != 'image.png':
                 explanation_name = explanation[:-4]
@@ -104,8 +104,7 @@ if IS_RUNNING:
             example={
                 "id": int(example_id),
                 "path": example[2],
-                "label": example[3],
-                "prediction": example[4]
+                "prediction": example[3]
             },
             explanations=[
                 {
