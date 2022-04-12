@@ -2,8 +2,10 @@ import sqlite3
 from flask import current_app, g, cli
 import click
 import random
+import pandas
 
 DATABASE = './database.db'
+
 
 def get_db():
     if 'db' not in g:
@@ -31,6 +33,24 @@ def initdb_command():
         db.cursor().executescript(f.read())
     db.commit()
     print('Initialized the database.')
+
+
+@click.command('dumpevals')
+@click.argument('filename')
+@cli.with_appcontext
+def dumpevals_command(filename):
+    """Initializes the database."""
+    db = get_db()
+    df = pandas.read_sql_query(
+        "SELECT explanations_evaluation.id, name, example_id, username, score "
+        "FROM explanations_evaluation "
+        "INNER JOIN explanations ON explanations_evaluation.explanation_id = explanations.id "
+        "INNER JOIN users ON explanations_evaluation.user_id = users.id",
+        db
+    )
+    df.to_csv(filename, index=False, header=True)
+    db.commit()
+    print('Dumped database.')
 
 
 def get_userid(username):

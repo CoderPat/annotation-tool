@@ -1,4 +1,5 @@
 database.db
+old_databases/*
 static/examples/*
 
 

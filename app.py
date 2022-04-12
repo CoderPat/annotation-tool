@@ -8,8 +8,11 @@ from collections import defaultdict
 
 app = Flask(__name__)
 app.cli.add_command(db_utils.initdb_command)
+app.cli.add_command(db_utils.dumpevals_command)
 
 IS_RUNNING = 'flask run' in ' '.join(sys.argv)
+
+EXCLUDE_EXPLAINERS = ["attention_last_layer.png"]
 
 if IS_RUNNING:
     EXAMPLES_FOLDER = os.path.join('static', 'examples')
@@ -22,7 +25,7 @@ if IS_RUNNING:
         example_path = os.path.join('examples', example_tag, 'image.png')
         examples.append((example_name, example_path, example_prediction))
         for explanation in os.listdir(os.path.join(EXAMPLES_FOLDER, example_tag)):
-            if explanation.endswith('.png') and explanation != 'image.png':
+            if explanation.endswith('.png') and explanation != 'image.png' and explanation not in EXCLUDE_EXPLAINERS:
                 explanation_name = explanation[:-4]
                 explanation_path = os.path.join('examples', example_tag, explanation)
                 explanations[example_name].append((explanation_name, explanation_path))
@@ -36,6 +39,9 @@ if IS_RUNNING:
         cursor = db.cursor()
         if request.method == 'POST':
             username = request.form['username']
+            if not username:
+                return redirect(url_for('index', error="Empty username"))
+
             userid = db_utils.get_userid(username)
             if request.form['action'] == 'register':
                 if userid is not None:
@@ -83,12 +89,48 @@ if IS_RUNNING:
         example_id = request.args['example_id']
         example = db_utils.get_example(example_id)
         explanations = db_utils.get_explanations(example_id)
-
+        error=request.args.get('error')
         if request.method == 'POST':
+            scores = []
             for explananation in explanations:
-                score = request.form.get(f"score_{explananation['id']}")
-                if score != "":
-                    db_utils.update_explanation_evaluation(userid, explananation['id'], score)
+                scores.append(request.form.get(f"score_{explananation['id']}"))
+            
+            # check for consistent ranking scores
+            setted_scores = sorted([int(score) for score in scores if score != ""])
+            prev_score = None
+            invalid_ranking = False
+            # print(setted_scores)
+            for score in setted_scores:
+                if prev_score is None:
+                    print(f"prev_score is None: {score}")
+                    if score != 1:
+                        invalid_ranking = True
+                        break 
+                    prev_score = score
+                    num_equals = 1
+                else:
+                    print(f"prev_score is {prev_score}: {score}")
+                    if score == prev_score:
+                        num_equals += 1
+                    else:
+                        print(f"num_equals: {num_equals}")
+                        if score != prev_score + num_equals:
+                            print('break')
+                            invalid_ranking = True
+                            break
+                        prev_score = score
+                        num_equals = 1
+            
+            
+            if invalid_ranking:
+                return redirect(url_for('example', name=request.args['name'], example_id=example_id, error='Invalid ranking'))
+                
+            error=None
+            for i, explananation in enumerate(explanations):
+                if scores[i] != "":
+                    db_utils.update_explanation_evaluation(userid, explananation['id'], scores[i])
+
+            return redirect(url_for('example', name=request.args['name'], example_id=f"{int(example_id)+1}"))
         
         explanations_evaluations = db_utils.get_explanations_evaluations(userid)
 
@@ -113,5 +155,6 @@ if IS_RUNNING:
                     "score": scores[explanation[0]] 
                 }
                 for explanation in explanations 
-            ]
+            ],
+            error=error
         )

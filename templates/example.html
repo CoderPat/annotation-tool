@@ -5,7 +5,7 @@
 <style>
 .container {
   height: 1000px;
-  width: 1400px;
+  width: 1600px;
   position: relative;
 }
 
@@ -19,9 +19,9 @@
 }
 
 .imagebox {
-  border: 3px solid blue;
+  border: 3px solid black;
   width: 270px;
-  padding: 10px;
+  padding: 5px;
 }
 
 .text-center {
@@ -31,6 +31,10 @@
 .btn-width {
   width: 400px;
   margin: auto;
+}
+
+.description em {
+  color: #ffa500;
 }
 </style>
 
@@ -48,6 +52,9 @@
         <div class="text-center">
         <h3> Model Prediction: {{ example.prediction }} </h3>
         </div>
+        <h2 class="text-center"> Explanations </h1>
+        <i>Recall:</i> <span style="color:blue;">blue values</span> indicate that a pixel contributed positively to the model's prediction, while <span style="color:red;">red values</span> indicate the a pixel contributed negatively to the model's prediction, white values indicate close to no contribution.
+        Rank the explanation according to how much they align to how <b>you</b> would highlight image to justify making the same prediction as the model.
         <form method="post">
         <!-- Email input -->
         <br>
@@ -62,11 +69,16 @@
         {% endfor %}
         <br>
         <br>
-        <button type="submit" class="btn btn-width btn-primary btn-block mb-4" name="action" value="previous">Save</button>
+        {% if error %}
+        <div class="alert alert-warning text-center" role="alert">
+        {{ error }}
+        </div>
+        {% endif %}
+        <button type="submit" class="btn btn-width btn-primary btn-block mb-4" name="action" value="save">Save & Next</button>
       </form>
-      <a href="{{ url_for('example', name=name, example_id=example.id+1) }}" class="btn btn-width btn-primary btn-block mb-4">Next</a>
+
       <a href="{{ url_for('example', name=name, example_id=example.id-1) }}" class="btn btn-width btn-primary btn-block mb-4">Previous</a>
-      <a href="{{ url_for('dashboard', name=name) }}" class="btn btn-width btn-primary btn-block mb-4">Back</a>)}}
+      <a href="{{ url_for('dashboard', name=name) }}" class="btn btn-width btn-primary btn-block mb-4">Back</a>
     </div>
 </body>
 </html>
